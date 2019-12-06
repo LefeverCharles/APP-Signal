@@ -45,10 +45,9 @@ grid on;
 title("Probleme I-A");
 y = zeros(taille, 1);
 y(fin:taille, 1) = x(fin:taille, 1);
-puisanceInst=0;
 for t2 = fin:1:taille
-  puisanceInst = y(t2, 1)^2;
-  if (puissanceInst < puissanceBruit)   % On compare les deux amplitudes
+  puissanceInst = y(t2, 1)^2;
+  if (puissanceInst < puissanceBruit * 1.05)   % On compare les deux amplitudes
     y(t2, 1) = 0;                       % Si l'amplitude du signal est supérieure au bruit, on considère qu'il y a signal
   end
 end 
