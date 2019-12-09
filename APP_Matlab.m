@@ -50,9 +50,9 @@ fref = 16.35*((2^(1/12))^randi(12*11 - 1 , 1, 1))
 f = 130 + (4000-130).*rand(1,1);    %rand(nombre d'élement,intervalle entre 0.000 et 1.000)
 phi =  2*pi.*rand(1,1);              % génère aléatoirement un déphasage aléatoire
 
-
-xref = 0 : 1/16000 : 5/fref;
-x =  0 : 1/16000 : 5/f;
+longEchantillon = max(5/fref, 5/f)
+xref = 0 : 1/16000 : longEchantillon;
+x =  0 : 1/16000 : longEchantillon;
 
 signal1 = Aref*sin(2*pi*fref*xref)
 signal2 = A*sin(2*pi*f*x + phi)
