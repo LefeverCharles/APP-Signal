@@ -5,7 +5,7 @@ fref = 16.35*((2^(1/12))^randi(12*11 - 1 , 1, 1)); % Signal entre 16Hz et 31.6Hz
 f = 130*((2^(1/12))^(12*5 - 1))*(1 + 0.02*rand(1,1));    % rand(nombre d'élement,intervalle entre 0.000 et 1.000)
 phi =  2*pi.*rand(1,1);              % génère aléatoirement un déphasage aléatoire
 
-#Qu ils aient le même nombre de points
+# Qu'ils aient le même nombre de points
 longEchantillon = 100 * max(1/fref, 1/f);
 x =  0 : 1/16000 : longEchantillon;
 
