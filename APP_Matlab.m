@@ -46,7 +46,7 @@ valeff
 
 Aref = rand(1,1)*0.9 + 0.1;             %randi(génère entre 0.1 et 1,1 ligne 1 colonne)
 A = randi(100,1,1)/100;
-fref = 16.35*((2^(1/12))^randi(11 , 1, 1)) % 16.35*((2^(1/12))^(12))
+fref = 16.35*((2^(1/12))^randi(12*11 - 1 , 1, 1))
 f = 130 + (4000-130).*rand(1,1);    %rand(nombre d'élement,intervalle entre 0.000 et 1.000)
 phi =  2*pi.*rand(1,1);              % génère aléatoirement un déphasage aléatoire
 
