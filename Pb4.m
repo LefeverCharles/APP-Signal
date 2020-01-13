@@ -8,11 +8,12 @@ note5 = [1046.50 ,1108.73 , 1174.66 , 1244.51 , 1318.51 ,1396.91 , 1479.98 , 156
 note6 = [2093 ,2217.46 , 2349.32 , 2489.02 , 2637.02 ,2793.83 , 2959.96 , 3135.96 ,3322.44 ,3520,3729.31,3951.07];
  
 fnote = note2(5);%On peut le changer comme on veut
-fn = 5000;
-fe = 10000;
+
+fe = 16000;
 te = 1/fe;
  
 t = 0:te:2;
+
 A =  randi([1 5]);
 y_sin = sin(2*pi*fnote*t);
 y_carre = square(2*pi*fnote*t);
@@ -23,35 +24,36 @@ bruit=A*randn(1,length(t));%Bruit
 Y1 = y_sin+bruit;%Sin + bruit
 
 figure(1);
-subplot(2,2,1);
-plot(t,Y1);%Figure de Sin + bruit
-title('Sin + bruite');
-axis([0 10/fnote -10 10]);
-yfiltre = load('Bandpass.mat');%Fs=10000 Fstop1=125 Fpass1 =128 Fpass2 =3951 Fstop2 = 4000
+subplot(2,2,3);
+plot(t,abs(fft(Y1)));%Figure de Sin + bruit
+title('FFT signal');
+axis([0 fnote/10 0 20000]);
+%yfiltre = load('Bandpass.mat');%Fs=10000 Fstop1=125 Fpass1 =128 Fpass2 =3952 Fstop2 = 4000
+yfiltre = load('Lowpass.mat');
 Yfiltre = filter(yfiltre.Num,1,Y1);%Filtre de sin+bruit
  
-subplot(2,2,2);%On figure le fft de sin+bruit
+subplot(2,2,4);%On figure le fft de sin+bruit
 Yf_fft = abs(fft(Yfiltre));
 plot(Yf_fft);
 title('fft de signal + bruit');
 xlabel('Frequence');
 ylabel('Amplitude');
  
-subplot(2,2,3);%On figure le bruit
+subplot(2,2,2);%On figure le bruit
 plot(t,bruit);
 title('bruit');
 axis([0 10/fnote -10 10]);
 
-subplot(2,2,4);%On figure le sin
+subplot(2,2,1);%On figure le sin
 plot(t,y_sin);
 title('sin');
 axis([0 10/fnote -10 10]);
 
 figure(2);
 subplot(2,2,1);%On figure le filtre de sin+bruit
-plot(t,Yfiltre);
+plot(t,Y1);
 title('Filtre de sin+bruit');
-axis([0 10/fnote -10 10]);
+axis([0 0.25/fnote -10 10]);
  
 Y_fftFiltre = abs(fft(Y1));
 
@@ -68,4 +70,9 @@ Y_fftSinCarre = abs(fft(y_carre));
 subplot(2,2,4);%On figure le fft de carré de sin
 plot(Y_fftSinCarre);
 title('fft de carré de sin');
+
+disp(lince(max(Y_fftFiltre)))
+disp(lince(max(Y_fftSinCarre)))
+ 
+ 
  
