@@ -1,3 +1,8 @@
+%%%%%%%%%%%%%%%
+% OLD VERSION %
+%%%%%%%%%%%%%%%
+
+
 freq = 440;
 Fe = 16000;
 duree = 5; % en secondes
