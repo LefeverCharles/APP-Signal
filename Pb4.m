@@ -146,7 +146,7 @@ scoreCarre = calculScore(fnote, Y2BruitFiltreFFT(1: fe/2), longueurSignal)
 function score = calculScore (fref, signalFFT, sizeSignal)
   [maxValue, indMaxValue] = max(signalFFT);
   indMaxValue = indMaxValue / sizeSignal;
-  score = (fref - abs(fref - indMaxValue)) / fref;
+  score = (log2(fref) - abs(log2(fref) - log2(indMaxValue))) / log2(fref);
   score = score * 100;
 end
 
