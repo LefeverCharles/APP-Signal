@@ -2,7 +2,6 @@
 
 // Trucs à faire
 
-
 // ************ Definition des prototypes de fonctions ************
 void afficheur();
 void affichage(int Motifi[]);
@@ -16,8 +15,8 @@ void visuelAttendu();
 void visuelInattendu();
 unsigned long tempsReactionVisuelAttendu(int pinVisuel);
 unsigned long tempsReactionVisuelInattendu(int pinVisuel);
-
-
+char  Conv_hexToAsc(char digH);               // définition de la fonction de conversion d'un chiffre hexa en code ASCII
+void  Envoi_Trame(int valcapt, int typeCapt); // définition de la fonction d'envoi d'une trame
 
 // ************ Definition des variables pour l'afficheur ************ 
 #define NB_COL  5
@@ -71,7 +70,12 @@ int pinVisuelGreen = 40; // PF_2
 int pinVisuelBlue = 39; // PF_3
 int pinBouton = 12; // PA_5
 
-
+// ************ Definition des variables pour l'envoi de la trame ************
+#define   SIZE_ENVOI  17
+#define   SIZE_RECEP  15
+char  TrameEnvoi[20];   // buffer pour envoyer  une trame vers la passerelle
+char  TrameRecep[20];   // buffer pour recevoir une trame venant de la passerelle
+char  CheckSum;
 
 void setup()
 {
@@ -102,6 +106,26 @@ void setup()
   digitalWrite(pinVisuelGreen, LOW);
   digitalWrite(pinVisuelBlue, LOW);
   boolean done = false;
+  
+  // ************ Initialisation de la trame pour le port Bluetooth *************
+    Serial.println("Initialise Bluetooth");
+  Serial1.begin(9600); // Initialisation de la sortie Bluetooth
+
+
+  // Partie constante de la trame 
+  TrameEnvoi[0] = '1';  // le champ TRA
+  // le champ OBJ (4 octets)
+  TrameEnvoi[1] = '0';
+  TrameEnvoi[2] = '0';
+  TrameEnvoi[3] = '7';  // mettre le chiffre du numero de groupe (7)
+  TrameEnvoi[4] = 'D';  // mettre la lettre  du numero de groupe (D)
+  TrameEnvoi[5] = '1';  // champ REQ. 1= Requete en ecriture
+  TrameEnvoi[7] = '0';  // champ NUM (2 octets). Numero du capteur
+  TrameEnvoi[8] = '1';  // Fixé à '01' car on a un seul capteur de chaque type
+  TrameEnvoi[13] = '0'; // Champ TIM (4 octets) = heure d'envoi de la trame
+  TrameEnvoi[14] = '0'; // Ce champs n'est pas utile à la résolution du problème
+  TrameEnvoi[15] = '0'; // On fixe donc que toute donnée est envoyée à 00:00
+  TrameEnvoi[16] = '0';
 }
 
 
@@ -913,4 +937,47 @@ unsigned long tempsReactionVisuelInattendu(int pinVisuel) {
   Serial.println(chrono);
   delay(10);
   return chrono;
+}
+
+//---------------------------------
+void Envoi_Trame(int valcapt, int typeCapt) {
+//---------------------------------
+  /*
+   * valcapt : entier compris entre 0 et 65 535
+   */
+ int n;  char digH, digA;  // digit (4 bits) Hexa et Ascii
+
+  TrameEnvoi[6] = typeCapt; // type capteur
+  // convertir la valeur du capteur en 4 chiffres ASCII (poid fort en premier)
+  TrameEnvoi[9] = Conv_hexToAsc((valcapt >> 12) & 0x0F); // conversion du 1er chiffre (poid fort) (>> signifie décalage de 12 bits vers la droite)
+  TrameEnvoi[10] = Conv_hexToAsc((valcapt >> 8) & 0x0F); // conversion du 2e chiffre (décalage de 8 bits vers la droite)
+  TrameEnvoi[11] = Conv_hexToAsc((valcapt >> 4) & 0x0F); // conversion du 3e chiffre (décalage de 4 bits vers la droite)
+  TrameEnvoi[12] = Conv_hexToAsc(valcapt & 0x0F); // conversion du 4e chiffre (poid faible) (pas besoin de décalage. garder juste le dernier digit)
+
+  Serial.print("   (Trame ");
+  CheckSum = 0;
+  for (n = 0; n < SIZE_ENVOI; n++) { //  boucle pour envoyer une trame vers la passerelle : envoi des 'SIZE_ENVOI' premiers octets
+    Serial.print(TrameEnvoi[n]);
+    Serial1.print(TrameEnvoi[n]);
+    CheckSum = CheckSum + TrameEnvoi[n];
+  }
+  digA = Conv_hexToAsc((CheckSum >> 4) & 0x0F); // poid fort du CheckSum
+  Serial.print(digA);       // envoi du poid fort
+  Serial1.print(digA);
+  digA = Conv_hexToAsc(CheckSum & 0x0F); // poid faible du CheckSum
+  Serial.print(digA);       // envoi du poid faible
+  Serial1.print(digA);
+  Serial.println(")");       // retour à la ligne
+}
+
+//---------------------------------
+char  Conv_hexToAsc(char digH){
+//---------------------------------
+ char valAsc;
+
+  digH &= 0x0F;   // garder que les 4 bits de poid faible = 1 chiffre hexa (0 à 15)
+  valAsc = digH + 0x30;
+  if (digH > 9)
+    valAsc += 0x07;
+  return valAsc;
 }
