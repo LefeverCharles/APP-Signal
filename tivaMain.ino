@@ -23,7 +23,7 @@ unsigned long tempsReactionVisuelInattendu(int pinVisuel);
 int Col[] = {10,9,8,6,5};  // Numéro des broches connectées aux colonnes de l'afficheur
 int Lig[] = {38,37,36,35,34,33,13};  // Numéro des broches connectées aux lignes de l'affficheur
 
-int Motif1[] =   { 1,1,1,1,0,   // Définition d'une matrice binaire représentant le caractère 
+int Motif3[] =   { 1,1,1,1,0,   // Définition d'une matrice binaire représentant le caractère 
                    0,0,0,0,1,   // à afficher
                    0,0,0,0,1,
                    0,1,1,1,0,
@@ -40,13 +40,45 @@ int Motif2[] =   { 1,1,1,1,0,   // Définition d'une matrice binaire représenta
                    1,0,0,0,0,
                    0,1,1,1,1};
 
-int Motif3[] =   { 0,0,1,0,0,   // Définition d'une matrice binaire représentant le caractère 
+int Motif1[] =   { 0,0,1,0,0,   // Définition d'une matrice binaire représentant le caractère 
                    0,1,1,0,0,   // à afficher
                    1,0,1,0,0,
                    0,0,1,0,0,
                    0,0,1,0,0,
                    0,0,1,0,0,
                    1,1,1,1,1};
+
+int Motif4[] =   { 0,0,1,0,0,   // Définition d'une matrice binaire représentant le caractère 
+                   0,1,1,0,0,   // à afficher
+                   1,0,1,0,0,
+                   1,1,1,1,1,
+                   0,0,1,0,0,
+                   0,0,1,0,0,
+                   0,0,1,0,0};
+
+int Motif5[] =   { 0,1,1,1,1,   // Définition d'une matrice binaire représentant le caractère 
+                   1,0,0,0,0,   // à afficher
+                   1,0,0,0,0,
+                   0,1,1,1,0,
+                   0,0,0,0,1,
+                   0,0,0,0,1,
+                   1,1,1,1,0};
+
+int Motif6[] =   { 0,1,1,1,1,   // Définition d'une matrice binaire représentant le caractère 
+                   1,0,0,0,0,   // à afficher
+                   1,0,0,0,0,
+                   0,1,1,1,1,
+                   1,0,0,0,1,
+                   1,0,0,0,1,
+                   0,1,1,1,0};
+
+int Motif7[] =   { 1,1,1,1,1,   // Définition d'une matrice binaire représentant le caractère 
+                   0,0,0,0,1,   // à afficher
+                   0,0,0,0,1,
+                   0,0,0,1,0,
+                   0,0,1,0,0,
+                   0,1,0,0,0,
+                   1,0,0,0,0};
 
                    
 // ************ Definition des variables pour le capteur cardiaque ************
@@ -174,7 +206,7 @@ void loop() {
 void afficheur(){
   int i;
   for (i=0;i<3000;i++){
-    affichage(Motif1); //Affichage 3
+    affichage(Motif3); //Affichage 3
   }
   
   for (i=0;i<3000;i++){
@@ -182,7 +214,7 @@ void afficheur(){
   }
   
   for (i=0;i<3000;i++){
-    affichage(Motif3); //Affichage 1
+    affichage(Motif1); //Affichage 1
   }
 }
 
