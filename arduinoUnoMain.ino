@@ -1,3 +1,5 @@
+// Trucs à faire
+
 
 // ************ Definition des prototypes de fonctions ************
 void afficheur();
@@ -46,6 +48,37 @@ int Motif3[] =   { 0,0,1,0,0,   // Définition d'une matrice binaire représenta
                    0,0,1,0,0,
                    1,1,1,1,1};
 
+int Motif4[] =   { 0,0,1,0,0,   // Définition d'une matrice binaire représentant le caractère 
+                   0,1,1,0,0,   // à afficher
+                   1,0,1,0,0,
+                   1,1,1,1,1,
+                   0,0,1,0,0,
+                   0,0,1,0,0,
+                   0,0,1,0,0};
+
+int Motif5[] =   { 0,1,1,1,1,   // Définition d'une matrice binaire représentant le caractère 
+                   1,0,0,0,0,   // à afficher
+                   1,0,0,0,0,
+                   0,1,1,1,0,
+                   0,0,0,0,1,
+                   0,0,0,0,1,
+                   1,1,1,1,0};
+
+int Motif6[] =   { 0,1,1,1,1,   // Définition d'une matrice binaire représentant le caractère 
+                   1,0,0,0,0,   // à afficher
+                   1,0,0,0,0,
+                   0,1,1,1,1,
+                   1,0,0,0,1,
+                   1,0,0,0,1,
+                   0,1,1,1,0};
+
+int Motif7[] =   { 1,1,1,1,1,   // Définition d'une matrice binaire représentant le caractère 
+                   0,0,0,0,1,   // à afficher
+                   0,0,0,0,1,
+                   0,0,0,1,0,
+                   0,0,1,0,0,
+                   0,1,0,0,0,
+                   1,0,0,0,0};
                    
 // ************ Definition des variables pour le capteur cardiaque ************
 int pinCardio = 11;//24; // PD_1
@@ -109,9 +142,6 @@ void setup()
 }
 
 
-
-
-
 // ************ Action réalisées en boucle par le micro-controleur ************ 
 
 void loop() {
@@ -128,25 +158,47 @@ void loop() {
     Serial.println("5) Test de reflexe visuel innattendu \n");
     
     if(choix==1){
+      //affichage(Motif1);//Affichage id test
+      delay(2000);
       //afficheur(); //Compte à rebours
       capteur_cardiaque(); //Test de fréquence cardiaque
       }
     else if(choix==2){
+      //affichage(Motif2);//Affichage id test
+      delay(2000);
       //afficheur();//Compte à rebours
       capteur_temperature();//Test de température
+      delay(1000);
       }
     else if(choix==3){
+      //affichage(Motif3);//Affichage id test
+      delay(2000);
       //afficheur();//Compte à rebours
-      //delay(3000);
       capeur_sonore();//Test de reconnaissance sonore
       }
     else if(choix==4){
+      //affichage(Motif4);//Affichage id test
+      delay(2000);
       //afficheur();//Compte à rebours
       visuelAttendu();
       }
     else if(choix==5){
+      //affichage(Motif5);//Affichage id test
+      delay(2000);
       //afficheur();//Compte à rebours
       visuelInattendu();
+      }
+    else if(choix==6){
+      //affichage(Motif6);//Affichage id test
+      delay(2000);
+      //afficheur();//Compte à rebours
+      visuelAttendu();//Dans le noir
+      }
+    else if(choix==7){
+      //affichage(Motif7);//Affichage id test
+      delay(2000);
+      //afficheur();//Compte à rebours
+      visuelInattendu();//Dans le noir
       }
    }
 }
