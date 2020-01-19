@@ -1,5 +1,3 @@
-// Trucs à faire
-
 
 // ************ Definition des prototypes de fonctions ************
 void afficheur();
@@ -20,8 +18,8 @@ unsigned long tempsReactionVisuelInattendu(int pinVisuel);
 // ************ Definition des variables pour l'afficheur ************ 
 #define NB_COL  5
 #define NB_LIG  7
-int Col[] = {10,9,8,6,5};  // Numéro des broches connectées aux colonnes de l'afficheur
-int Lig[] = {38,37,36,35,34,33,13};  // Numéro des broches connectées aux lignes de l'affficheur
+int Col[] = {2, 3, 4, 5, 6}; // blanc = PA_7, PA_6, PA_5, PE_5, bleu = PE_4 // {10,9,8,6,5};  // Numéro des broches connectées aux colonnes de l'afficheur
+int Lig[] = {13, 20, 19, 10, 9, 8, 7}; // rouge = PB_3, PC_4, PC_5, PC_6, PC_7, PD_6, noir = PA_4 // {38,37,36,35,34,33,13};  // Numéro des broches connectées aux lignes de l'afficheur
 
 int Motif1[] =   { 1,1,1,1,0,   // Définition d'une matrice binaire représentant le caractère 
                    0,0,0,0,1,   // à afficher
@@ -65,8 +63,8 @@ int pinCasque = 9;//19;
 
 // ************ Definition des variables pour capteur visuel attendu / innatendu ************
 int pinVisuelRed = 8; // PF_1
-int pinVisuelGreen = 4; // PF_2
-int pinVisuelBlue = 7; // PF_3
+int pinVisuelGreen = 7; // PF_2
+int pinVisuelBlue = 6; // PF_3
 int pinBouton = 12; // PA_5
 
 
@@ -81,7 +79,15 @@ void setup()
   }
     
   for (i=0;i<NB_LIG;i++){
-    pinMode(Lig[i], OUTPUT);
+    if (Lig[i] == 20){
+      pinMode(A5, OUTPUT);
+    }
+    else if (Lig[i] == 19){
+      pinMode(A3, OUTPUT);
+    }
+    else {
+      pinMode(Lig[i], OUTPUT);
+    }
   }
   // ************ Initialisation du pin du capteur cardiaque ************
   pinMode(pinCardio, INPUT);
@@ -112,7 +118,7 @@ void loop() {
   boolean done = false;
   if(done==false){
     done = true;
-    int choix = 2;
+    int choix = 1;
     Serial.println("Voici le main programme \n");
     Serial.println("Choisissez le test que vous souhaitez passer \n");
     Serial.println("1) Test de fréquence cardiaque \n");
@@ -120,7 +126,7 @@ void loop() {
     Serial.println("3) Test de reconnaissance sonore \n");
     Serial.println("4) Test de reflexe visuel attendu \n");
     Serial.println("5) Test de reflexe visuel innattendu \n");
-    //scanf("%i", &choix);
+    
     if(choix==1){
       //afficheur(); //Compte à rebours
       capteur_cardiaque(); //Test de fréquence cardiaque
@@ -131,6 +137,7 @@ void loop() {
       }
     else if(choix==3){
       //afficheur();//Compte à rebours
+      //delay(3000);
       capeur_sonore();//Test de reconnaissance sonore
       }
     else if(choix==4){
@@ -165,7 +172,7 @@ void afficheur(){
 
 #define TEMP  10
 // ************ Affiche une fois le tableau en fonction de la matrice qu'on lui donne
-void affichage(int Motifi[]){
+void affichage2(int Motifi[]){
   int i,j;
   for (i=0;i<NB_LIG;i++){
     digitalWrite(Lig[i],LOW);  // Activation de la ligne i (les autres sont éteintes
@@ -176,6 +183,36 @@ void affichage(int Motifi[]){
       }
     digitalWrite(Lig[i],HIGH); // désactivation de la ligne i avant passage à la ligne suivante
     }
+}
+
+void affichage(int Motifi[]){
+  int i,j;
+  for (i=0;i<NB_LIG;i++){
+    if (Lig[i] == 20){
+      digitalWrite(A5,LOW);
+    }
+    else if (Lig[i] == 19){
+      digitalWrite(A3,LOW);
+    }
+    else {
+      digitalWrite(Lig[i],LOW);
+    }
+    // Activation de la ligne i (les autres sont éteintes
+    for(j=0;j<NB_COL;j++){
+      digitalWrite(Col[j],Motifi[i*NB_COL+j]);  // Selon le code défini par le motif allumage de la led 
+      delayMicroseconds(TEMP);
+      digitalWrite(Col[j],LOW);                // de la colonne j puis extinction
+      }
+    if (Lig[i] == 20){
+      digitalWrite(A5,HIGH);
+    }
+    else if (Lig[i] == 19){
+      digitalWrite(A3,HIGH);
+    }
+    else {
+      digitalWrite(Lig[i],HIGH);
+    } // désactivation de la ligne i avant passage à la ligne suivante
+  }
 }
 
 // ************ Appelle les différentes fonctions pour faire fonctionner le capteur cardiaque ************
