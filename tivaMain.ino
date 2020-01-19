@@ -939,45 +939,35 @@ unsigned long tempsReactionVisuelInattendu(int pinVisuel) {
   return chrono;
 }
 
-//---------------------------------
 void Envoi_Trame(int valcapt, int typeCapt) {
-//---------------------------------
-  /*
-   * valcapt : entier compris entre 0 et 65 535
-   */
+
  int n;  char digH, digA;  // digit (4 bits) Hexa et Ascii
 
   TrameEnvoi[6] = typeCapt; // type capteur
   // convertir la valeur du capteur en 4 chiffres ASCII (poid fort en premier)
-  TrameEnvoi[9] = Conv_hexToAsc((valcapt >> 12) & 0x0F); // conversion du 1er chiffre (poid fort) (>> signifie décalage de 12 bits vers la droite)
-  TrameEnvoi[10] = Conv_hexToAsc((valcapt >> 8) & 0x0F); // conversion du 2e chiffre (décalage de 8 bits vers la droite)
-  TrameEnvoi[11] = Conv_hexToAsc((valcapt >> 4) & 0x0F); // conversion du 3e chiffre (décalage de 4 bits vers la droite)
-  TrameEnvoi[12] = Conv_hexToAsc(valcapt & 0x0F); // conversion du 4e chiffre (poid faible) (pas besoin de décalage. garder juste le dernier digit)
+  TrameEnvoi[9] = Conv_hexToAsc((valcapt >> 12) & 0x0F); // conversion du 1er chiffre 
+  TrameEnvoi[10] = Conv_hexToAsc((valcapt >> 8) & 0x0F); // conversion du 2e chiffre
+  TrameEnvoi[11] = Conv_hexToAsc((valcapt >> 4) & 0x0F); // conversion du 3e chiffre
+  TrameEnvoi[12] = Conv_hexToAsc(valcapt & 0x0F); // conversion du 4e chiffre
 
-  Serial.print("   (Trame ");
   CheckSum = 0;
   for (n = 0; n < SIZE_ENVOI; n++) { //  boucle pour envoyer une trame vers la passerelle : envoi des 'SIZE_ENVOI' premiers octets
-    Serial.print(TrameEnvoi[n]);
     Serial1.print(TrameEnvoi[n]);
     CheckSum = CheckSum + TrameEnvoi[n];
   }
-  digA = Conv_hexToAsc((CheckSum >> 4) & 0x0F); // poid fort du CheckSum
-  Serial.print(digA);       // envoi du poid fort
+  digA = Conv_hexToAsc((CheckSum >> 4) & 0x0F);
+  // envoi du premier chiffre du checksum
   Serial1.print(digA);
-  digA = Conv_hexToAsc(CheckSum & 0x0F); // poid faible du CheckSum
-  Serial.print(digA);       // envoi du poid faible
+  digA = Conv_hexToAsc(CheckSum & 0x0F);
+  // envoi du deuxieme chiffre du checksum
   Serial1.print(digA);
-  Serial.println(")");       // retour à la ligne
 }
 
-//---------------------------------
-char  Conv_hexToAsc(char digH){
-//---------------------------------
- char valAsc;
-
-  digH &= 0x0F;   // garder que les 4 bits de poid faible = 1 chiffre hexa (0 à 15)
-  valAsc = digH + 0x30;
-  if (digH > 9)
-    valAsc += 0x07;
-  return valAsc;
+char  Conv_hexToAsc(char hexa){
+  char ascii;
+  hexa &= 0x0F;   // garder que les 4 bits de poid faible = 1 chiffre hexa (0 à 15)
+  ascii = hexa + 0x30;
+  if (hexa > 9)
+    ascii += 0x07;
+  return ascii;
 }
