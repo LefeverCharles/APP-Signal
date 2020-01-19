@@ -98,6 +98,7 @@ double res = 0.0;
 
 // ************ Definition des variables pour le capteur de frequence sonore ************
 int pinCasque = 19;
+int pinMicro = 26;
 
 // ************ Definition des variables pour capteur visuel attendu / innatendu ************
 int pinVisuelRed = 8; // PA_5
@@ -125,6 +126,9 @@ void setup()
   // ************ Initialisation du pin du capteur de température ************
   pinMode(pinT, OUTPUT);
 
+  // ************ Initialisation du pin du capteur de température ************
+  pinMode(pinMicro, INPUT);
+  pinMode(pinCasque, OUTPUT);
 
   // ************ Initialisation du pin des capteurs de reaction ************
   pinMode(pinVisuelRed, OUTPUT);
@@ -343,12 +347,44 @@ void signal_carre(int duree, int demi_periode) {
 
 // ************ Appelle la fonction faisant fonctionner le capteur sonore ************
 void capeur_sonore(){
+  delay(5000);
   signal_carre(2000, 1000);
+  delay(10000);
+  double score1 = mesureScoreMicro(1000);
+  Serial.println(score1);
   delay(10000);
   signal_carre(4000, 500);
   delay(10000);
+  double score2 = mesureScoreMicro(500);
+  Serial.println(score2);
+  delay(10000);
   signal_carre(3000, 750);
+  delay(10000);
+  double score3 = mesureScoreMicro(750);
+  Serial.println(score3);
+  delay(5000);
 }
+
+// ************ Appelle la fonction mesurant la justesse de l'utilisateur (micro) ************
+double mesureScoreMicro(int demiPeriode){
+  Serial.println("Mesure du micro");
+  delay(3000);
+  double fRef = 1000000.0 / (2 * demiPeriode);
+  unsigned long premiereDemiPeriode = pulseIn(pinMicro, HIGH);
+  unsigned long secondeDemiPeriode = pulseIn(pinMicro, LOW);
+  unsigned long periode = premiereDemiPeriode + secondeDemiPeriode;
+  double fUser = 1000000.0 / periode;
+  Serial.print(fRef);
+  Serial.print(" ");
+  Serial.println(fUser);
+  double score = 100*exp(-0.5*pow(abs(log2(fRef) - log2(fUser)) / (log2(fRef)*0.015), 2.0));
+  return score;
+}
+
+double log2 (double x){
+  return log(x) / log(2);
+}
+
 
 // ************ Appelle la fonction faisant fonctionner le capteur de reflexe visuel attendu ************
 void visuelAttendu(){
