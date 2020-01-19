@@ -492,10 +492,32 @@ char  Conv_hexToAsc(char hexa){
 }
 
 boolean TrameRecue(){
+  int check = 0;
   for (i = 0 ; i < 13 ; i++){
     if(TrameEnvoi[i]!=TrameRecep[i]){
       return false;
     }
+    if (TrameEnvoi[i]=='A'){
+      check+=10;
+    }
+    else if (TrameEnvoi[i]=='B'){
+      check+=11;
+    }
+    else if (TrameEnvoi[i]=='C'){
+      check+=12;
+    }
+    else if (TrameEnvoi[i]=='D'){
+      check+=13;
+    }
+    else if (TrameEnvoi[i]=='E'){
+      check+=14;
+    }
+    else if (TrameEnvoi[i]=='F'){
+      check+=15;
+    }
+    else{
+      check+=TrameEnvoi[i];
+    }
   }
-  return true;
+  return check==CheckSum;
 }
