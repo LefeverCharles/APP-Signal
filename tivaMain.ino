@@ -150,7 +150,7 @@ void loop() {
     Serial.println("3) Test de reconnaissance sonore \n");
     Serial.println("4) Test de reflexe visuel attendu \n");
     Serial.println("5) Test de reflexe visuel innattendu \n");
-    //scanf("%i", &choix);
+    
     if(choix==1){
       affichage(Motif1);//Affichage id test
       delay(2000);
@@ -163,31 +163,6 @@ void loop() {
       afficheur();//Compte à rebours
       capteur_temperature();//Test de température
       delay(1000);
-      /*
-      capteur_temperature();//Test de température
-      delay(1000);
-      capteur_temperature();//Test de température
-      delay(1000);
-      capteur_temperature();//Test de température
-      delay(1000);
-      capteur_temperature();//Test de température
-      delay(1000);
-      capteur_temperature();//Test de température
-      delay(1000);
-      capteur_temperature();//Test de température
-      delay(1000);
-      capteur_temperature();//Test de température
-      delay(1000);
-      capteur_temperature();//Test de température
-      delay(1000);
-      capteur_temperature();//Test de température
-      delay(1000);
-      capteur_temperature();//Test de température
-      delay(1000);
-      capteur_temperature();//Test de température
-      delay(1000);
-      capteur_temperature();//Test de température
-      delay(1000);*/
       }
     else if(choix==3){
       affichage(Motif3);//Affichage id test
@@ -405,14 +380,14 @@ void visuelInattendu(){
 
 // ************ Calcule le temps de reaction au stimulus sonore attendu ************
 unsigned long tempsReactionVisuelAttendu(int pinVisuel) {
-  //
+  
   Serial.println(3);
   delay(1000);
   Serial.println(2);
   delay(1000);
   Serial.println(1);
   delay(1000);
-  //
+  
   unsigned long chrono = millis();
   if(pinVisuel == -1){
     digitalWrite(pinVisuelRed, HIGH);
@@ -421,7 +396,7 @@ unsigned long tempsReactionVisuelAttendu(int pinVisuel) {
   } else {
     digitalWrite(pinVisuel, HIGH);
   }
-  while(!digitalRead(pinBouton)){
+  while(digitalRead(pinBouton)){
     delay(1);
   }
   chrono = millis() - chrono;
@@ -441,9 +416,7 @@ unsigned long tempsReactionVisuelAttendu(int pinVisuel) {
 
 // ************ Calcule le temps de reaction au stimulus sonore inattendu ************
 unsigned long tempsReactionVisuelInattendu(int pinVisuel) {
-  int random1 =0;
-  random1 = random(1,20); //RANDOM
-
+  
   Serial.println(3);
   delay(1000);
   Serial.println(2);
@@ -463,7 +436,7 @@ unsigned long tempsReactionVisuelInattendu(int pinVisuel) {
   } else {
     digitalWrite(pinVisuel, HIGH);
   }
-  while(!digitalRead(pinBouton)){
+  while(digitalRead(pinBouton)){
     delay(1);
   }
   chrono = millis() - chrono;
