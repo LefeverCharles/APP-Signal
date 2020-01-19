@@ -519,5 +519,13 @@ boolean TrameRecue(){
       check+=TrameEnvoi[i];
     }
   }
-  return check==CheckSum;
+  digA = Conv_hexToAsc((CheckSum >> 4) & 0x0F);
+  if (digA!=TrameRecep[13]){
+    return false;
+  }
+  digA = Conv_hexToAsc(CheckSum & 0x0F);
+  if (digA!=TrameRecep[14]){
+    return false;
+  }
+  return true;
 }
