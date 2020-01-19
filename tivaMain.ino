@@ -12,7 +12,13 @@ void visuelAttendu();
 void visuelInattendu();
 unsigned long tempsReactionVisuelAttendu(int pinVisuel);
 unsigned long tempsReactionVisuelInattendu(int pinVisuel);
+char  Conv_hexToAsc(char digH);              
+void  Envoi_Trame(int valcapt, int typeCapt); 
+boolean TrameRecue();
 
+char  TrameEnvoi[20];   // buffer pour envoyer  une trame vers la passerelle
+char  TrameRecep[20];   // buffer pour recevoir une trame venant de la passerelle
+char  CheckSum;
 
 
 // ************ Definition des variables pour l'afficheur ************ 
@@ -464,7 +470,7 @@ void Envoi_Trame(int valcapt, int typeCapt) {
   TrameEnvoi[12] = Conv_hexToAsc(valcapt & 0x0F); // conversion du 4e chiffre
 
   CheckSum = 0;
-  for (n = 0; n < SIZE_ENVOI; n++) { //  boucle pour envoyer une trame vers la passerelle : envoi des 'SIZE_ENVOI' premiers octets
+  for (n = 0; n < 17; n++) { //  boucle pour envoyer une trame vers la passerelle : envoi des 'SIZE_ENVOI' premiers octets
     Serial1.print(TrameEnvoi[n]);
     CheckSum = CheckSum + TrameEnvoi[n];
   }
@@ -483,4 +489,13 @@ char  Conv_hexToAsc(char hexa){
   if (hexa > 9)
     ascii += 0x07;
   return ascii;
+}
+
+boolean TrameRecue(){
+  for (i = 0 ; i < 13 ; i++){
+    if(TrameEnvoi[i]!=TrameRecep[i]){
+      return false;
+    }
+  }
+  return true;
 }
