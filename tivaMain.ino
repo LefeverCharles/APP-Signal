@@ -124,7 +124,7 @@ void setup()
   pinMode(pinCardio, INPUT);
   
   // ************ Initialisation du pin du capteur de température ************
-  pinMode(pinT, OUTPUT);
+  pinMode(pinT, INPUT);
 
   // ************ Initialisation du pin du capteur de température ************
   pinMode(pinMicro, INPUT);
@@ -145,14 +145,13 @@ void setup()
 
 
 
-
 // ************ Action réalisées en boucle par le micro-controleur ************ 
 
 void loop() {
   boolean done = false;
   if(done==false){
     done = true;
-    int choix = 2;
+    int choix = 1;
     Serial.println("Voici le main programme \n");
     Serial.println("Choisissez le test que vous souhaitez passer \n");
     Serial.println("1) Test de fréquence cardiaque \n");
@@ -164,44 +163,44 @@ void loop() {
     if(choix==1){
       affichage(Motif1);//Affichage id test
       delay(2000);
-      afficheur(); //Compte à rebours
+      //afficheur(); //Compte à rebours
       capteur_cardiaque(); //Test de fréquence cardiaque
       }
     else if(choix==2){
       affichage(Motif2);//Affichage id test
       delay(2000);
-      afficheur();//Compte à rebours
+      //afficheur();//Compte à rebours
       capteur_temperature();//Test de température
       delay(1000);
       }
     else if(choix==3){
       affichage(Motif3);//Affichage id test
       delay(2000);
-      afficheur();//Compte à rebours
+      //afficheur();//Compte à rebours
       capeur_sonore();//Test de reconnaissance sonore
       }
     else if(choix==4){
       affichage(Motif4);//Affichage id test
       delay(2000);
-      afficheur();//Compte à rebours
+      //afficheur();//Compte à rebours
       visuelAttendu();
       }
     else if(choix==5){
       affichage(Motif5);//Affichage id test
       delay(2000);
-      afficheur();//Compte à rebours
+      //afficheur();//Compte à rebours
       visuelInattendu();
       }
     else if(choix==6){
       affichage(Motif6);//Affichage id test
       delay(2000);
-      afficheur();//Compte à rebours
+      //afficheur();//Compte à rebours
       visuelAttendu();//Dans le noir
       }
     else if(choix==7){
       affichage(Motif7);//Affichage id test
       delay(2000);
-      afficheur();//Compte à rebours
+      //afficheur();//Compte à rebours
       visuelInattendu();//Dans le noir
       }
    }
@@ -211,16 +210,19 @@ void loop() {
 void afficheur(){
   int i;
   for (i=0;i<3000;i++){
-    affichage(Motif3); //Affichage 3
+    affichage(Motif1); //Affichage 3
   }
+  delay(5);
   
   for (i=0;i<3000;i++){
     affichage(Motif2); //Affichage 2
   }
+  delay(5);
   
   for (i=0;i<3000;i++){
-    affichage(Motif1); //Affichage 1
+    affichage(Motif3); //Affichage 1
   }
+  delay(5);
 }
 
 #define TEMP  10
@@ -228,21 +230,24 @@ void afficheur(){
 void affichage(int Motifi[]){
   int i,j;
   for (i=0;i<NB_LIG;i++){
-    digitalWrite(Lig[i],LOW);  // Activation de la ligne i (les autres sont éteintes
+    digitalWrite(Lig[i],LOW); // Activation de la ligne i (les autres sont éteintes
     for(j=0;j<NB_COL;j++){
       digitalWrite(Col[j],Motifi[i*NB_COL+j]);  // Selon le code défini par le motif allumage de la led 
       delayMicroseconds(TEMP);
       digitalWrite(Col[j],LOW);                // de la colonne j puis extinction
       }
     digitalWrite(Lig[i],HIGH); // désactivation de la ligne i avant passage à la ligne suivante
-    } 
+  }
 }
+
 
 // ************ Appelle les différentes fonctions pour faire fonctionner le capteur cardiaque ************
 void capteur_cardiaque(){
   boolean done = false;
   Serial.println("Attention ...");
   delay(3000);
+  afficheur();
+  delay(50);
   Serial.println("Go !");
   delay(50);
   if (!done) {
@@ -304,36 +309,45 @@ boolean mesureChangement(int ancienne, int nouvelle){ // Detecte une variation 0
 }
 
 
-// ************ Appelle la fonction faisant fonctionner le capteur cardiaque ************
+// ************ Appelle la fonction faisant fonctionner le capteur de température ************
 void capteur_temperature(){
-  res = 0.0;
+  delay(50);
+  Serial.println("Temperature");
+  afficheur();
+  delay(50);
+  double res = 0.0;
   
   brut = analogRead(pinT);
-  temp = brut * (3.3/4095.0) * 100;
+  temp = brut * (5.0/1023.0) * 100;
   res += temp;
   delay(50);
   
   brut = analogRead(pinT);
-  temp = brut * (3.3/4095.0) * 100;
+  temp = brut * (5.0/1023.0) * 100;
   res += temp;
   delay(50);
   
   brut = analogRead(pinT);
-  temp = brut * (3.3/4095.0) * 100;
+  temp = brut * (5.0/1023.0) * 100;
   res += temp;
   delay(50);
   
   brut = analogRead(pinT);
-  temp = brut * (3.3/4095.0) * 100;
+  temp = brut * (5.0/1023.0) * 100;
   res += temp;
   
   res /= 4;
   Serial.println(res);
   delay(50);
+  delay(4000);
 }
 
 // ************ Fonction qui emet un son dans le casque ************
 void signal_carre(int duree, int demi_periode) {
+  Serial.print("Signal ");
+  Serial.print(1000000.0 / (2 * demi_periode));
+  Serial.println("Hz");
+  afficheur();
   int boucle = 0;
   while (boucle < duree) {
     digitalWrite(pinCasque, HIGH); // on passe le pin à  +5V
@@ -347,32 +361,45 @@ void signal_carre(int duree, int demi_periode) {
 
 // ************ Appelle la fonction faisant fonctionner le capteur sonore ************
 void capeur_sonore(){
-  delay(5000);
+  delay(2000);
   signal_carre(2000, 1000);
-  delay(10000);
+  delay(7000);
   double score1 = mesureScoreMicro(1000);
   Serial.println(score1);
-  delay(10000);
+  
+  delay(7000);
   signal_carre(4000, 500);
-  delay(10000);
+  delay(7000);
   double score2 = mesureScoreMicro(500);
   Serial.println(score2);
-  delay(10000);
+  
+  delay(7000);
   signal_carre(3000, 750);
-  delay(10000);
+  delay(7000);
   double score3 = mesureScoreMicro(750);
   Serial.println(score3);
-  delay(5000);
+  delay(3000);
 }
 
 // ************ Appelle la fonction mesurant la justesse de l'utilisateur (micro) ************
 double mesureScoreMicro(int demiPeriode){
   Serial.println("Mesure du micro");
-  delay(3000);
+  delay(2000);
+  afficheur();
   double fRef = 1000000.0 / (2 * demiPeriode);
-  unsigned long premiereDemiPeriode = pulseIn(pinMicro, HIGH);
-  unsigned long secondeDemiPeriode = pulseIn(pinMicro, LOW);
-  unsigned long periode = premiereDemiPeriode + secondeDemiPeriode;
+  unsigned long premiereDemiPeriode = 0;
+  unsigned long secondeDemiPeriode = 0;
+  unsigned long periode = 0;
+  int count = 0;
+  int alpha = 20;
+  while(count < 20){
+    premiereDemiPeriode = pulseIn(pinMicro, HIGH);
+    secondeDemiPeriode = pulseIn(pinMicro, LOW);
+    periode += premiereDemiPeriode + secondeDemiPeriode;
+    count++;
+  }
+  count = 0;
+  periode /= alpha;
   double fUser = 1000000.0 / periode;
   Serial.print(fRef);
   Serial.print(" ");
@@ -384,7 +411,6 @@ double mesureScoreMicro(int demiPeriode){
 double log2 (double x){
   return log(x) / log(2);
 }
-
 
 // ************ Appelle la fonction faisant fonctionner le capteur de reflexe visuel attendu ************
 void visuelAttendu(){
@@ -420,16 +446,11 @@ void visuelInattendu(){
 }
 
 
-// ************ Calcule le temps de reaction au stimulus sonore attendu ************
+// ************ Calcule le temps de reaction au stimulus visuel attendu ************
 unsigned long tempsReactionVisuelAttendu(int pinVisuel) {
   
-  Serial.println(3);
-  delay(1000);
-  Serial.println(2);
-  delay(1000);
-  Serial.println(1);
-  delay(1000);
-  
+  afficheur();
+
   unsigned long chrono = millis();
   if(pinVisuel == -1){
     digitalWrite(pinVisuelRed, HIGH);
@@ -450,26 +471,20 @@ unsigned long tempsReactionVisuelAttendu(int pinVisuel) {
     digitalWrite(pinVisuel, LOW);
   }
   Serial.println(chrono);
+  Serial.println(" ");
   delay(10);
   return chrono;
 }
 
 
-
-// ************ Calcule le temps de reaction au stimulus sonore inattendu ************
+// ************ Calcule le temps de reaction au stimulus visuel inattendu ************
 unsigned long tempsReactionVisuelInattendu(int pinVisuel) {
   
-  Serial.println(3);
-  delay(1000);
-  Serial.println(2);
-  delay(1000);
-  Serial.println(1);
-  delay(1000);
-
+  afficheur();
+  
   long tempsAttente = random(1,2000);
   delay(tempsAttente);
   
-  //
   unsigned long chrono = millis();
   if(pinVisuel == -1){
     digitalWrite(pinVisuelRed, HIGH);
@@ -490,9 +505,11 @@ unsigned long tempsReactionVisuelInattendu(int pinVisuel) {
     digitalWrite(pinVisuel, LOW);
   }
   Serial.println(chrono);
+  Serial.println(" ");
   delay(10);
   return chrono;
 }
+
 
 void Envoi_Trame(int valcapt, int typeCapt) {
 
